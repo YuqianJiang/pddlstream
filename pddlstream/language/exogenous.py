@@ -224,6 +224,7 @@ def compile_to_exogenous(evaluations, domain, streams):
         return False
     print('Warning! The following predicates are mentioned in both action effects '
           'and stream domain conditions: {}'.format(exogenous_predicates))
+    streams = [s for s in streams if isinstance(s, Stream)]
     if EXOGENOUS_AXIOMS:
         compile_to_exogenous_axioms(evaluations, domain, streams)
     else:

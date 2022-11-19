@@ -324,9 +324,13 @@ class SkeletonQueue(Sized):
             return STANDBY, is_new
         #if not is_instance_ready(self.evaluations, instance):
         #    raise RuntimeError(instance)
+        if binding.parent_result and binding.parent_result.external.name == "provide-skeleton":
+            binding.parent_result.output_objects[0].value.plan = binding.skeleton.action_plan
         if binding.up_to_date():
             new_results, _ = process_instance(self.store, self.domain, instance, disable=self.disable)
             is_new = bool(new_results)
+            if instance.external.name == "provide-skeleton" and len(new_results) > 0:
+                new_results[0].output_objects[0].value.plan = binding.skeleton.action_plan
         for new_binding in binding.update_bindings():
             self.push_binding(new_binding)
         readd = not instance.enumerated
